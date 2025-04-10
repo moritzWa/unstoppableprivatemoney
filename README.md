@@ -1,3 +1,5 @@
+note this is outdated...
+
 # Unstoppable Private Money
 
 A secure and private payment processing system built with Node.js, Express, tRPC, and Stripe integration.
