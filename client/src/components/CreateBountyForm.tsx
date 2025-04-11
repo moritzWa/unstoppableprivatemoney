@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as z from 'zod';
-import { Organisation } from '../../../shared/types';
 import { trpc } from '../utils/trpc';
 import { Button } from './ui/button';
 import {
@@ -16,16 +15,19 @@ import {
   FormMessage,
 } from './ui/form';
 import { Input } from './ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Textarea } from './ui/textarea';
+
+interface OrganisationResponse {
+  _id: string;
+  name: string;
+  logo: {
+    contentType: string;
+  };
+  contactLink: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -41,7 +43,8 @@ const formSchema = z.object({
 export function CreateBountyForm() {
   const navigate = useNavigate();
 
-  const { data: organisations } = trpc.organisation.getAll.useQuery<Organisation[]>();
+  const { data: organisations } = trpc.organisation.getAll.useQuery<OrganisationResponse[]>();
+  console.log('Raw organisations data:', organisations);
 
   const createBounty = trpc.bounty.create.useMutation({
     onSuccess: () => {
@@ -99,35 +102,42 @@ export function CreateBountyForm() {
         <FormField
           control={form.control}
           name="organisation"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organisation</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select an organisation" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Organisations</SelectLabel>
+          render={({ field }) => {
+            console.log('Current field value:', field.value);
+            return (
+              <FormItem>
+                <FormLabel>Organisation</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    console.log('Select changed to:', value);
+                    field.onChange(value);
+                  }}
+                  value={field.value || ''}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an organisation" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
                     {organisations?.map((org) => (
-                      <SelectItem key={`org-${org.id}`} value={org.id}>
+                      <SelectItem key={org._id} value={org._id}>
                         {org.name}
                       </SelectItem>
                     ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormDescription className="flex items-center gap-1">
-                Can't find your organisation?{' '}
-                <Link to="/create-organisation" className="text-primary hover:underline">
-                  Create a new one
-                </Link>
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
+                  </SelectContent>
+                </Select>
+                <div>DEBUG: Current value: {field.value}</div>
+                <FormDescription className="flex items-center gap-1">
+                  Can't find your organisation?{' '}
+                  <Link to="/create-organisation" className="text-primary hover:underline">
+                    Create a new one
+                  </Link>
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         <FormField
@@ -199,17 +209,14 @@ export function CreateBountyForm() {
                 <FormLabel>Currency</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="w-[100px]">
-                      <SelectValue placeholder="Currency" />
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select currency" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Currencies</SelectLabel>
-                      <SelectItem value="USD">USD</SelectItem>
-                      <SelectItem value="EUR">EUR</SelectItem>
-                      <SelectItem value="GBP">GBP</SelectItem>
-                    </SelectGroup>
+                    <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="EUR">EUR</SelectItem>
+                    <SelectItem value="GBP">GBP</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
