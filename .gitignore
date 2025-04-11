@@ -72,4 +72,4 @@ Thumbs.db
 
 # Misc
 *.pem
-.vercel
+.vercelserver/.env.temp
