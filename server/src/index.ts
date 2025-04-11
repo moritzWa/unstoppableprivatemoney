@@ -4,7 +4,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Stripe from 'stripe';
 import { User as UserModel } from './models/user';
-import { publicProcedure, router } from './trpc';
+import { createContext, publicProcedure, router } from './trpc';
 
 // Export tRPC utilities
 export { publicProcedure, router };
@@ -15,12 +15,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 
 // Import routers
 import { authRouter } from './routers/auth';
+import { organisationRouter } from './routers/organisation';
 import { paymentsRouter } from './routers/payments';
 
 // Create app router
 export const appRouter = router({
   auth: authRouter,
   payments: paymentsRouter,
+  organisation: organisationRouter,
 });
 
 export type AppRouter = typeof appRouter;
@@ -49,12 +51,12 @@ app.use(
   })
 );
 
-// Use JSON parser for all non-webhook routes
+// Use JSON parser with increased limit for all non-webhook routes
 app.use((req, res, next) => {
   if (req.originalUrl === '/api/webhooks/stripe') {
     next();
   } else {
-    express.json()(req, res, next);
+    express.json({ limit: '10mb' })(req, res, next);
   }
 });
 
@@ -108,6 +110,7 @@ app.use(
   '/trpc',
   trpcExpress.createExpressMiddleware({
     router: appRouter,
+    createContext,
     onError({ error, path }) {
       console.error(`Error in tRPC path ${path}:`, error);
       // Convert auth errors to 401 responses
@@ -125,11 +128,11 @@ app.use(
 );
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/deep-table';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/unstoppableprivatemoney';
 
 mongoose
   .connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
+  .then(() => console.log('Connected to MongoDB ' + MONGODB_URI))
   .catch((error) => console.error('MongoDB connection error:', error));
 
 // Start server

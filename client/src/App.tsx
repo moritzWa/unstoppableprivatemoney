@@ -6,6 +6,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
 import BlogPage from './app/blog/BlogPage';
 import BlogPostPage from './app/blog/BlogPostPage';
+import { CreateOrganisationForm } from './components/CreateOrganisationForm';
 import HomePage from './components/HomePage';
 import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
@@ -143,6 +144,18 @@ function AppContent() {
                   <BlogPostPage />
                 </div>
               </>
+            }
+          />
+          {/* Add new protected route */}
+          <Route
+            path="/create-organisation"
+            element={
+              <ProtectedRoute>
+                <div className="container mx-auto px-4 py-8 pt-24">
+                  <h1 className="text-2xl font-bold mb-8">Create Organisation</h1>
+                  <CreateOrganisationForm />
+                </div>
+              </ProtectedRoute>
             }
           />
         </Routes>
