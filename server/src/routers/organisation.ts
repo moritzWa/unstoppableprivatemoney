@@ -43,4 +43,17 @@ export const organisationRouter = router({
       updatedAt: org.updatedAt.toISOString(),
     }));
   }),
+
+  // Add a new procedure to get organization logo
+  getLogo: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+    const org = await Organisation.findById(input.id);
+    if (!org || !org.logo) {
+      return null;
+    }
+
+    return {
+      contentType: org.logo.contentType,
+      data: org.logo.data.toString('base64'),
+    };
+  }),
 });

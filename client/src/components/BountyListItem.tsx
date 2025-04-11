@@ -1,6 +1,7 @@
-import { Clock, CloudLightning } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { trpc } from '../utils/trpc';
 
 // This should match exactly what the server returns
 export interface BountyData {
@@ -42,13 +43,19 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
   dueIn,
   prize,
 }) => {
+  // Query for the logo
+  const { data: logoData } = trpc.organisation.getLogo.useQuery(
+    { id: organisation.id },
+    { enabled: !!organisation.logo } // Only fetch if org has a logo
+  );
+
   return (
     <div className="flex items-start p-4 gap-4 bg-card hover:bg-accent/10 rounded-lg transition-colors">
       {/* Organization Logo */}
       <div className="w-16 h-16 flex-shrink-0 rounded-md bg-muted flex items-center justify-center overflow-hidden">
-        {organisation.logo ? (
+        {logoData ? (
           <img
-            src={`/api/organisations/${organisation.id}/logo`}
+            src={`data:${organisation.logo?.contentType};base64,${logoData.data}`}
             alt={`${organisation.name} logo`}
             className="w-full h-full object-cover"
           />
@@ -67,10 +74,10 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
         <div className="text-sm text-muted-foreground">{organisation.name}</div>
 
         <div className="flex items-center gap-6 mt-2">
-          <div className="flex items-center text-sm text-muted-foreground">
+          {/* <div className="flex items-center text-sm text-muted-foreground">
             <CloudLightning size={16} className="mr-1" />
             <span>Bounty</span>
-          </div>
+          </div> */}
 
           {dueIn && (
             <div className="flex items-center text-sm text-muted-foreground">
