@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTypewriter } from 'react-simple-typewriter';
-import { Button } from './ui/button';
 
 interface LandingPageProps {
   landingPageKeyword?: string;
@@ -36,15 +35,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
           Zcash Bounties is a platform for finding and completing bounties on Zcash.
         </p>
 
+        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          Under construction.
+        </p>
+
         {/* Try it free now button */}
-        <div className="flex justify-center mt-8">
+        {/* <div className="flex justify-center mt-8">
           <Button
             className="bg-[#4169E1] hover:bg-[#3a5ecc] text-white px-8 py-6 text-lg"
             onClick={() => navigate('/login')}
           >
             Get Started
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* footer section */}
