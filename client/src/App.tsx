@@ -50,16 +50,25 @@ function AppContent() {
   return (
     <>
       <Helmet>
-        <title>Deep Table</title>
-        <meta name="description" content="Generate tables of valuable data." />
-        <meta property="og:title" content="Deep Table" />
-        <meta property="og:description" content="Generate tables of valuable data." />
+        <title>Zcash Bounties</title>
+        <meta
+          name="description"
+          content="Zcash Bounties is a platform for finding and completing bounties on Zcash."
+        />
+        <meta property="og:title" content="Zcash Bounties" />
+        <meta
+          property="og:description"
+          content="Zcash Bounties is a platform for finding and completing bounties on Zcash."
+        />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://unstoppableprivatemoney.com/linkpreview.png" />
         <meta property="og:url" content="https://unstoppableprivatemoney.com" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Deep Table" />
-        <meta name="twitter:description" content="Generate tables of valuable data." />
+        <meta name="twitter:title" content="Zcash Bounties" />
+        <meta
+          name="twitter:description"
+          content="Zcash Bounties is a platform for finding and completing bounties on Zcash."
+        />
         <meta name="twitter:image" content="https://unstoppableprivatemoney.com/linkpreview.png" />
         <link rel="canonical" href="https://unstoppableprivatemoney.com" />
       </Helmet>

@@ -30,12 +30,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
     <div className="max-w-5xl mx-auto px-4">
       {/* hero section */}
       <div className="w-full text-center py-16 md:py-24 space-y-6">
-        <h1 className="text-4xl md:text-6xl font-bold my-6">your lp text here</h1>
+        <h1 className="text-4xl md:text-6xl font-bold my-6">Zcash Bounties</h1>
 
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Intelligent web research assistant that helps you make informed decisions. From travel
-          planning to product research, we analyze the web to give you comprehensive, table-based
-          insights.
+          Zcash Bounties is a platform for finding and completing bounties on Zcash.
         </p>
 
         {/* Try it free now button */}
@@ -44,7 +42,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
             className="bg-[#4169E1] hover:bg-[#3a5ecc] text-white px-8 py-6 text-lg"
             onClick={() => navigate('/login')}
           >
-            Try it free now
+            Get Started
           </Button>
         </div>
       </div>
