@@ -53,4 +53,36 @@ export const bountyRouter = router({
       };
     });
   }),
+
+  getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+    const bounty = await Bounty.findById(input.id).populate<{
+      organisation: PopulatedOrganisation;
+    }>('organisation');
+
+    if (!bounty) {
+      throw new Error('Bounty not found');
+    }
+
+    return {
+      id: bounty._id.toString(),
+      name: bounty.name,
+      organisation: {
+        id: bounty.organisation._id.toString(),
+        name: bounty.organisation.name,
+        logo: bounty.organisation.logo
+          ? {
+              contentType: bounty.organisation.logo.contentType,
+            }
+          : undefined,
+      },
+      submitLink: bounty.submitLink,
+      contactLink: bounty.contactLink,
+      skills: bounty.skills,
+      prizes: bounty.prizes,
+      prizeCurrency: bounty.prizeCurrency,
+      details: bounty.details,
+      createdAt: bounty.createdAt.toISOString(),
+      updatedAt: bounty.updatedAt.toISOString(),
+    };
+  }),
 });

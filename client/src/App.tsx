@@ -6,6 +6,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
 import BlogPage from './app/blog/BlogPage';
 import BlogPostPage from './app/blog/BlogPostPage';
+import BountyPage from './components/BountyPage';
 import { CreateBountyForm } from './components/CreateBountyForm';
 import { CreateOrganisationForm } from './components/CreateOrganisationForm';
 import HomePage from './components/HomePage';
@@ -166,6 +167,16 @@ function AppContent() {
                 <div className="container mx-auto px-4 py-8 pt-24">
                   <h1 className="text-2xl font-bold mb-8">Create Bounty</h1>
                   <CreateBountyForm />
+                </div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bounty/:id"
+            element={
+              <ProtectedRoute>
+                <div className="container mx-auto">
+                  <BountyPage />
                 </div>
               </ProtectedRoute>
             }
