@@ -2,10 +2,15 @@ import { model, Schema, Types } from 'mongoose';
 import { Bounty as SharedBounty } from '../../../shared/types';
 import { IOrganisation } from './organisation';
 
+// Define what a populated organization looks like
+export interface PopulatedOrganisation extends IOrganisation {
+  _id: Types.ObjectId;
+}
+
 // Extend the shared type with Mongoose-specific types
 export interface IBounty
   extends Omit<SharedBounty, 'id' | 'organisation' | 'createdAt' | 'updatedAt'> {
-  organisation: Types.ObjectId | IOrganisation;
+  organisation: Types.ObjectId | PopulatedOrganisation;
   createdAt: Date;
   updatedAt: Date;
 }

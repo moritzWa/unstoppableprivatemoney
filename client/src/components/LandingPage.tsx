@@ -1,14 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTypewriter } from 'react-simple-typewriter';
+import { trpc } from '../utils/trpc';
+import BountyListItem from './BountyListItem';
+import { Button } from './ui/button';
 
 interface LandingPageProps {
   landingPageKeyword?: string;
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
-  // const [prompt, setPrompt] = useState('');
   const navigate = useNavigate();
+  const { data: bounties, isLoading } = trpc.bounty.getAll.useQuery();
 
   const [text] = useTypewriter({
     words: ['product', 'travel location', 'lead', 'company', 'prospect', 'VC'],
@@ -17,37 +20,54 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
     deleteSpeed: 100,
   });
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (prompt.trim()) {
-  //     // Navigate to research page with the query parameter
-  //     navigate(`/new?q=${encodeURIComponent(prompt.trim())}`);
-  //   }
-  // };
-
   return (
     <div className="max-w-5xl mx-auto px-4">
       {/* hero section */}
-      <div className="w-full text-center py-16 md:py-24 space-y-6">
-        <h1 className="text-4xl md:text-6xl font-bold my-6">Zcash Bounties</h1>
+      <div className="w-full text-center py-12 md:py-16 space-y-6">
+        <h1 className="text-4xl md:text-6xl font-bold">Zcash Bounties</h1>
 
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Zcash Bounties is a platform for finding and completing bounties on Zcash.
+          Discover and complete bounties on Zcash. Join our community of contributors and earn
+          rewards.
         </p>
 
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Under construction.
-        </p>
-
-        {/* Try it free now button */}
-        {/* <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-6">
           <Button
-            className="bg-[#4169E1] hover:bg-[#3a5ecc] text-white px-8 py-6 text-lg"
-            onClick={() => navigate('/login')}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg"
+            onClick={() => navigate('/create-bounty')}
           >
-            Get Started
+            Create Bounty
           </Button>
-        </div> */}
+        </div>
+      </div>
+
+      {/* All Open Bounties */}
+      <div className="mt-8 mb-16">
+        <h2 className="text-2xl font-bold mb-6">All Open</h2>
+
+        {isLoading ? (
+          <div className="text-center py-8">Loading bounties...</div>
+        ) : !bounties || bounties.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            No bounties available at the moment. Be the first to create one!
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {bounties.map((bounty) => (
+              <BountyListItem
+                key={bounty.id}
+                id={bounty.id}
+                name={bounty.name}
+                organisation={bounty.organisation}
+                dueIn={undefined}
+                prize={{
+                  amount: bounty.prizes.split(',')[0].trim(),
+                  currency: bounty.prizeCurrency,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* footer section */}

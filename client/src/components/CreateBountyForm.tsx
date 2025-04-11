@@ -18,16 +18,7 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Textarea } from './ui/textarea';
 
-interface OrganisationResponse {
-  _id: string;
-  name: string;
-  logo: {
-    contentType: string;
-  };
-  contactLink: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Organisation } from '@shared/types';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -43,7 +34,7 @@ const formSchema = z.object({
 export function CreateBountyForm() {
   const navigate = useNavigate();
 
-  const { data: organisations } = trpc.organisation.getAll.useQuery<OrganisationResponse[]>();
+  const { data: organisations } = trpc.organisation.getAll.useQuery<Organisation[]>();
   console.log('Raw organisations data:', organisations);
 
   const createBounty = trpc.bounty.create.useMutation({
@@ -121,13 +112,12 @@ export function CreateBountyForm() {
                   </FormControl>
                   <SelectContent>
                     {organisations?.map((org) => (
-                      <SelectItem key={org._id} value={org._id}>
+                      <SelectItem key={org.id} value={org.id}>
                         {org.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <div>DEBUG: Current value: {field.value}</div>
                 <FormDescription className="flex items-center gap-1">
                   Can't find your organisation?{' '}
                   <Link to="/create-organisation" className="text-primary hover:underline">
@@ -207,18 +197,9 @@ export function CreateBountyForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Currency</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select currency" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="USD">USD</SelectItem>
-                    <SelectItem value="EUR">EUR</SelectItem>
-                    <SelectItem value="GBP">GBP</SelectItem>
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Input placeholder="USD" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

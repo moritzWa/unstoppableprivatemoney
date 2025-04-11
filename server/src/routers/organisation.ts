@@ -30,6 +30,17 @@ export const organisationRouter = router({
 
   // Add a get method to fetch organizations
   getAll: protectedProcedure.query(async () => {
-    return Organisation.find().sort({ createdAt: -1 });
+    const organisations = await Organisation.find().sort({ createdAt: -1 });
+
+    return organisations.map((org) => ({
+      id: org._id.toString(),
+      name: org.name,
+      logo: {
+        contentType: org.logo.contentType,
+      },
+      contactLink: org.contactLink,
+      createdAt: org.createdAt.toISOString(),
+      updatedAt: org.updatedAt.toISOString(),
+    }));
   }),
 });

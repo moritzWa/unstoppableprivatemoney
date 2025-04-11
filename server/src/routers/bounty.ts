@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Bounty } from '../models/bounty';
+import { Bounty, PopulatedOrganisation } from '../models/bounty';
 import { protectedProcedure, router } from '../trpc';
 
 export const bountyRouter = router({
@@ -21,4 +21,36 @@ export const bountyRouter = router({
       await bounty.save();
       return bounty;
     }),
+
+  // Add method to get all bounties
+  getAll: protectedProcedure.query(async () => {
+    const bounties = await Bounty.find()
+      .sort({ createdAt: -1 })
+      .populate<{ organisation: PopulatedOrganisation }>('organisation');
+
+    return bounties.map((bounty) => {
+      const org = bounty.organisation as PopulatedOrganisation;
+      return {
+        id: bounty._id.toString(),
+        name: bounty.name,
+        organisation: {
+          id: org._id.toString(),
+          name: org.name,
+          logo: org.logo
+            ? {
+                contentType: org.logo.contentType,
+              }
+            : undefined,
+        },
+        submitLink: bounty.submitLink,
+        contactLink: bounty.contactLink,
+        skills: bounty.skills,
+        prizes: bounty.prizes,
+        prizeCurrency: bounty.prizeCurrency,
+        details: bounty.details,
+        createdAt: bounty.createdAt.toISOString(),
+        updatedAt: bounty.updatedAt.toISOString(),
+      };
+    });
+  }),
 });
