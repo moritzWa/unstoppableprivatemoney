@@ -55,13 +55,13 @@ function AppContent() {
         <meta property="og:title" content="Deep Table" />
         <meta property="og:description" content="Generate tables of valuable data." />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://deeptable.app/linkpreview.png" />
-        <meta property="og:url" content="https://deeptable.app" />
+        <meta property="og:image" content="https://unstoppableprivatemoney.com/linkpreview.png" />
+        <meta property="og:url" content="https://unstoppableprivatemoney.com" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Deep Table" />
         <meta name="twitter:description" content="Generate tables of valuable data." />
-        <meta name="twitter:image" content="https://deeptable.app/linkpreview.png" />
-        <link rel="canonical" href="https://deeptable.app" />
+        <meta name="twitter:image" content="https://unstoppableprivatemoney.com/linkpreview.png" />
+        <link rel="canonical" href="https://unstoppableprivatemoney.com" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground w-full">
         <Routes>
