@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Bounty, PopulatedOrganisation } from '../models/bounty';
-import { protectedProcedure, router } from '../trpc';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 export const bountyRouter = router({
   create: protectedProcedure
@@ -22,8 +22,7 @@ export const bountyRouter = router({
       return bounty;
     }),
 
-  // Add method to get all bounties
-  getAll: protectedProcedure.query(async () => {
+  getAll: publicProcedure.query(async () => {
     const bounties = await Bounty.find()
       .sort({ createdAt: -1 })
       .populate<{ organisation: PopulatedOrganisation }>('organisation');
@@ -54,7 +53,7 @@ export const bountyRouter = router({
     });
   }),
 
-  getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
     const bounty = await Bounty.findById(input.id).populate<{
       organisation: PopulatedOrganisation;
     }>('organisation');

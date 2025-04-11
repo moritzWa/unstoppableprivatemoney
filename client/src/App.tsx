@@ -76,112 +76,90 @@ function AppContent() {
         <link rel="canonical" href="https://unstoppableprivatemoney.com" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground w-full">
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Navbar />
-                <LandingPage />
-              </>
-            }
-          />
-          {/* Protect these routes */}
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute>
-                <SettingsPage />
-              </ProtectedRoute>
-            }
-          />
-          {/* Leave these routes unprotected */}
-          <Route
-            path="/login"
-            element={
-              <>
-                <Navbar />
-                <div className="container mx-auto px-4 py-8 pt-24">
+        <Navbar />
+        <div className="pt-24">
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <div className="container mx-auto px-4 py-8">
                   <LoginPage />
                 </div>
-              </>
-            }
-          />
-          <Route
-            path="/waitlist-form"
-            element={
-              <>
-                <Navbar />
-                <div className="container mx-auto px-4 py-8 pt-24">
+              }
+            />
+            <Route
+              path="/waitlist-form"
+              element={
+                <div className="container mx-auto px-4 py-8">
                   <WaitlistFormPage />
                 </div>
-              </>
-            }
-          />
-          <Route
-            path="/blog"
-            element={
-              <>
-                <Navbar />
-                <div className="container mx-auto px-4 py-8 pt-24">
+              }
+            />
+            <Route
+              path="/blog"
+              element={
+                <div className="container mx-auto px-4 py-8">
                   <BlogPage />
                 </div>
-              </>
-            }
-          />
-          <Route
-            path="/blog/:slug"
-            element={
-              <>
-                <Navbar />
-                <div className="container mx-auto px-4 py-8 pt-24">
+              }
+            />
+            <Route
+              path="/blog/:slug"
+              element={
+                <div className="container mx-auto px-4 py-8">
                   <BlogPostPage />
                 </div>
-              </>
-            }
-          />
-          {/* Add new protected route */}
-          <Route
-            path="/create-organisation"
-            element={
-              <ProtectedRoute>
-                <div className="container mx-auto px-4 py-8 pt-24">
-                  <h1 className="text-2xl font-bold mb-8">Create Organisation</h1>
-                  <CreateOrganisationForm />
-                </div>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/create-bounty"
-            element={
-              <ProtectedRoute>
-                <div className="container mx-auto px-4 py-8 pt-24">
-                  <h1 className="text-2xl font-bold mb-8">Create Bounty</h1>
-                  <CreateBountyForm />
-                </div>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/bounty/:id"
-            element={
-              <ProtectedRoute>
-                <div className="container mx-auto">
+              }
+            />
+            <Route
+              path="/create-organisation"
+              element={
+                <ProtectedRoute>
+                  <div className="container mx-auto px-4 py-8">
+                    <h1 className="text-2xl font-bold mb-8">Create Organisation</h1>
+                    <CreateOrganisationForm />
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/create-bounty"
+              element={
+                <ProtectedRoute>
+                  <div className="container mx-auto px-4 py-8">
+                    <h1 className="text-2xl font-bold mb-8">Create Bounty</h1>
+                    <CreateBountyForm />
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bounty/:id"
+              element={
+                <div className="container mx-auto px-4 py-8">
                   <BountyPage />
                 </div>
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+              }
+            />
+          </Routes>
+        </div>
       </div>
     </>
   );

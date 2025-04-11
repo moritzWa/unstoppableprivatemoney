@@ -1,3 +1,4 @@
+import { useToast } from '@/hooks/use-toast';
 import { Share2 } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { trpc } from '../utils/trpc';
@@ -11,6 +12,8 @@ const BountyPage = () => {
     { id: bounty?.organisation.id ?? '' },
     { enabled: !!bounty?.organisation.logo }
   );
+
+  const { toast } = useToast();
 
   if (isLoading) {
     return <div className="container mx-auto px-4 py-8">Loading...</div>;
@@ -44,7 +47,16 @@ const BountyPage = () => {
               <h1 className="text-3xl font-bold">{bounty.name}</h1>
               <p className="text-muted-foreground">{bounty.organisation.name}</p>
             </div>
-            <Button variant="outline" size="icon">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                toast({
+                  title: 'Copied to clipboard',
+                });
+              }}
+            >
               <Share2 className="h-4 w-4" />
             </Button>
           </div>

@@ -31,14 +31,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
           rewards.
         </p>
 
-        <div className="flex justify-center mt-6">
+        {/* <div className="flex justify-center mt-6">
           <Button
             className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg"
             onClick={() => navigate('/create-bounty')}
           >
             Create Bounty
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* All Open Bounties */}

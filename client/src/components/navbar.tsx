@@ -9,12 +9,16 @@ export function Navbar() {
 
   const NavLinks = () => (
     <>
+      {/* bounties list */}
       <Link
-        to="/blog"
-        className={`hover:text-primary transition-colors ${location.pathname === '/blog' || location.pathname.startsWith('/blog/') ? 'text-primary font-medium' : ''}`}
+        to="/"
+        className={`hover:text-primary transition-colors ${location.pathname === '/' ? 'text-primary font-medium' : ''}`}
       >
-        Blog
+        Bounties
       </Link>
+
+      {/* blog */}
+      <Link to="/blog">Blog</Link>
 
       {/* {isAuthenticated ? (
         <Link
