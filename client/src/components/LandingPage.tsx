@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTypewriter } from 'react-simple-typewriter';
 import { trpc } from '../utils/trpc';
 import BountyListItem from './BountyListItem';
-import { Button } from './ui/button';
 
 interface LandingPageProps {
   landingPageKeyword?: string;
@@ -72,7 +71,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
 
       {/* footer section */}
       <div className="flex flex-row items-center justify-center mt-12 mb-8">
-        <p className="text-muted-foreground">© 2025 Deep Table Research Inc.</p>
+        <p className="text-muted-foreground">© 2025 Unstoppable Private Money</p>
       </div>
     </div>
   );

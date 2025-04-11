@@ -144,7 +144,7 @@ const SettingsPage: React.FC = () => {
               </div>
             </div>
 
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <h3 className="text-lg font-medium">Subscription Status</h3>
               </CardHeader>
@@ -166,7 +166,7 @@ const SettingsPage: React.FC = () => {
                   </Button>
                 )}
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Button
               onClick={() => {
