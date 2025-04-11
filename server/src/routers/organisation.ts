@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Organisation } from '../models/organisation';
-import { protectedProcedure, router } from '../trpc';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 export const organisationRouter = router({
   create: protectedProcedure
@@ -45,7 +45,7 @@ export const organisationRouter = router({
   }),
 
   // Add a new procedure to get organization logo
-  getLogo: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+  getLogo: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
     const org = await Organisation.findById(input.id);
     if (!org || !org.logo) {
       return null;
