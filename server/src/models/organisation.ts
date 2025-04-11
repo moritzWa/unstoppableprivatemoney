@@ -1,12 +1,13 @@
 import { Schema, model } from 'mongoose';
+import { Organisation as SharedOrganisation } from '../../../shared/types';
 
-export interface IOrganisation {
-  name: string;
+// Extend the shared type with Mongoose-specific types
+export interface IOrganisation
+  extends Omit<SharedOrganisation, 'id' | 'logo' | 'createdAt' | 'updatedAt'> {
   logo: {
     data: Buffer;
     contentType: string;
   };
-  contactLink: string;
   createdAt: Date;
   updatedAt: Date;
 }

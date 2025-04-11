@@ -15,6 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 
 // Import routers
 import { authRouter } from './routers/auth';
+import { bountyRouter } from './routers/bounty';
 import { organisationRouter } from './routers/organisation';
 import { paymentsRouter } from './routers/payments';
 
@@ -23,6 +24,7 @@ export const appRouter = router({
   auth: authRouter,
   payments: paymentsRouter,
   organisation: organisationRouter,
+  bounty: bountyRouter,
 });
 
 export type AppRouter = typeof appRouter;

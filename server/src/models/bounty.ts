@@ -1,28 +1,14 @@
 import { model, Schema, Types } from 'mongoose';
+import { Bounty as SharedBounty } from '../../../shared/types';
 import { IOrganisation } from './organisation';
 
-interface IPrize {
-  priceAmount: number;
-  priceCurrency: string;
-}
-
-interface IBounty {
-  name: string;
-  openStatus: boolean;
+// Extend the shared type with Mongoose-specific types
+export interface IBounty
+  extends Omit<SharedBounty, 'id' | 'organisation' | 'createdAt' | 'updatedAt'> {
   organisation: Types.ObjectId | IOrganisation;
-  submitLink: string;
-  contactLink: string;
-  skillsNeeded: string[];
-  prizes: IPrize[];
-  details: string;
   createdAt: Date;
   updatedAt: Date;
 }
-
-const prizeSchema = new Schema<IPrize>({
-  priceAmount: { type: Number, required: true },
-  priceCurrency: { type: String, required: true },
-});
 
 const bountySchema = new Schema<IBounty>(
   {
@@ -31,8 +17,9 @@ const bountySchema = new Schema<IBounty>(
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', required: true },
     submitLink: { type: String, required: true },
     contactLink: { type: String, required: true },
-    skillsNeeded: [{ type: String }],
-    prizes: [prizeSchema],
+    skills: { type: String, required: true },
+    prizes: { type: String, required: true },
+    prizeCurrency: { type: String, required: true },
     details: { type: String, required: true },
   },
   {
@@ -40,6 +27,4 @@ const bountySchema = new Schema<IBounty>(
   }
 );
 
-const Bounty = model<IBounty>('Bounty', bountySchema);
-
-export { Bounty, IBounty, IPrize };
+export const Bounty = model<IBounty>('Bounty', bountySchema);
