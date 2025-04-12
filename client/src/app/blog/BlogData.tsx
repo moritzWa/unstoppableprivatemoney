@@ -22,7 +22,7 @@ export const blogPosts: BlogPostMetadata[] = [
     author: 'Team',
     content: (
       <>
-        <p>Hello world test</p>
+        <p>Hello world</p>
       </>
     ),
   },
