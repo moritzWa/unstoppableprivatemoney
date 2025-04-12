@@ -1,6 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTypewriter } from 'react-simple-typewriter';
 import { trpc } from '../utils/trpc';
 import BountyListItem from './BountyListItem';
 
@@ -9,15 +7,8 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
-  const navigate = useNavigate();
   const { data: bounties, isLoading } = trpc.bounty.getAll.useQuery();
-
-  const [text] = useTypewriter({
-    words: ['product', 'travel location', 'lead', 'company', 'prospect', 'VC'],
-    loop: true,
-    delaySpeed: 500,
-    deleteSpeed: 100,
-  });
+  const token = localStorage.getItem('accessToken');
 
   return (
     <div className="max-w-5xl mx-auto px-4">
@@ -63,6 +54,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
                   amount: bounty.prizes.split(',')[0].trim(),
                   currency: bounty.prizeCurrency,
                 }}
+                isLoggedIn={!!token}
               />
             ))}
           </div>

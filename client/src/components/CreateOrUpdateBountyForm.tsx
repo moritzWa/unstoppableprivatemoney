@@ -1,7 +1,7 @@
 import { toast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as z from 'zod';
 import { trpc } from '../utils/trpc';
 import { Button } from './ui/button';
@@ -19,7 +19,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Textarea } from './ui/textarea';
 
 import { Organisation } from '@shared/types';
-import React from 'react';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -32,11 +31,8 @@ const formSchema = z.object({
   details: z.string().min(1, 'Details are required'),
 });
 
-interface CreateOrUpdateBountyFormProps {
-  bountyId?: string;
-}
-
-export function CreateOrUpdateBountyForm({ bountyId }: CreateOrUpdateBountyFormProps) {
+export function CreateOrUpdateBountyForm() {
+  const { id: bountyId } = useParams();
   const navigate = useNavigate();
 
   const { data: bountyData } = trpc.bounty.getById.useQuery(
@@ -44,14 +40,33 @@ export function CreateOrUpdateBountyForm({ bountyId }: CreateOrUpdateBountyFormP
     { enabled: !!bountyId }
   );
 
+  console.log('Bounty data in CreateOrUpdateBountyForm:', bountyData);
+
   const { data: organisations } = trpc.organisation.getAll.useQuery<Organisation[]>();
   console.log('Raw organisations data:', organisations);
+
+  const updateBounty = trpc.bounty.update.useMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Bounty updated successfully',
+      });
+      navigate('/home');
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update bounty',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const createBounty = trpc.bounty.create.useMutation({
     onSuccess: () => {
       toast({
         title: 'Success',
-        description: bountyId ? 'Bounty updated successfully' : 'Bounty created successfully',
+        description: 'Bounty created successfully',
       });
       navigate('/home');
     },
@@ -66,40 +81,45 @@ export function CreateOrUpdateBountyForm({ bountyId }: CreateOrUpdateBountyFormP
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      organisation: '',
-      submitLink: '',
-      contactLink: '',
-      skills: '',
-      prizes: '',
-      prizeCurrency: '',
-      details: '',
-    },
+    defaultValues: bountyData
+      ? {
+          name: bountyData.name,
+          organisation: bountyData.organisation.id,
+          submitLink: bountyData.submitLink,
+          contactLink: bountyData.contactLink,
+          skills: bountyData.skills,
+          prizes: bountyData.prizes,
+          prizeCurrency: bountyData.prizeCurrency,
+          details: bountyData.details,
+        }
+      : {
+          name: '',
+          organisation: '',
+          submitLink: '',
+          contactLink: '',
+          skills: '',
+          prizes: '',
+          prizeCurrency: '',
+          details: '',
+        },
   });
 
-  React.useEffect(() => {
-    if (bountyData) {
-      form.reset({
-        name: bountyData.name,
-        organisation: bountyData.organisation.id,
-        submitLink: bountyData.submitLink,
-        contactLink: bountyData.contactLink,
-        skills: bountyData.skills,
-        prizes: bountyData.prizes,
-        prizeCurrency: bountyData.prizeCurrency,
-        details: bountyData.details,
-      });
-    }
-  }, [bountyData]);
-
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createBounty.mutate(values);
+    if (bountyId) {
+      updateBounty.mutate({
+        id: bountyId,
+        ...values,
+      });
+    } else {
+      createBounty.mutate(values);
+    }
   }
+
+  const isSubmitting = bountyId ? updateBounty.isLoading : createBounty.isLoading;
 
   return (
     <Form {...form}>
-      <h1 className="text-2xl font-bold mb-6">{bountyId ? 'Edit Bounty' : 'Create New Bounty'}</h1>
+      <h1 className="mb-6 text-2xl font-bold">{bountyId ? 'Edit Bounty' : 'Create New Bounty'}</h1>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
@@ -144,7 +164,7 @@ export function CreateOrUpdateBountyForm({ bountyId }: CreateOrUpdateBountyFormP
                     ))}
                   </SelectContent>
                 </Select>
-                <FormDescription className="flex items-center gap-1">
+                <FormDescription className="flex gap-1 items-center">
                   Can't find your organisation?{' '}
                   <Link to="/create-organisation" className="text-primary hover:underline">
                     Create a new one
@@ -254,8 +274,8 @@ export function CreateOrUpdateBountyForm({ bountyId }: CreateOrUpdateBountyFormP
           )}
         />
 
-        <Button type="submit" disabled={createBounty.isLoading}>
-          {createBounty.isLoading
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting
             ? bountyId
               ? 'Updating...'
               : 'Creating...'

@@ -1,6 +1,8 @@
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import { Clock } from 'lucide-react';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { trpc } from '../utils/trpc';
 
 // This should match exactly what the server returns
@@ -30,10 +32,11 @@ interface BountyListItemProps {
   name: string;
   organisation: BountyData['organisation']; // Use the exact type from the server
   dueIn?: string;
-  prize?: {
+  prize: {
     amount: string;
     currency: string;
   };
+  isLoggedIn?: boolean;
 }
 
 const BountyListItem: React.FC<BountyListItemProps> = ({
@@ -42,7 +45,33 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
   organisation,
   dueIn,
   prize,
+  isLoggedIn,
 }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const deleteBounty = trpc.bounty.delete.useMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Bounty deleted successfully',
+      });
+      // You might want to refresh the bounties list here
+    },
+  });
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this bounty?')) {
+      deleteBounty.mutate({ id });
+    }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    navigate(`/edit-bounty/${id}`);
+  };
+
   // Query for the logo
   const { data: logoData } = trpc.organisation.getLogo.useQuery(
     { id: organisation.id },
@@ -51,17 +80,17 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
 
   return (
     <Link to={`/bounty/${id}`} className="no-underline">
-      <div className="flex cursor-pointer items-start p-4 gap-4 bg-card hover:bg-accent rounded-lg transition-colors">
+      <div className="flex gap-4 items-start p-4 rounded-lg transition-colors cursor-pointer bg-card hover:bg-accent">
         {/* Organization Logo */}
-        <div className="w-16 h-16 flex-shrink-0 rounded-md bg-muted flex items-center justify-center overflow-hidden">
+        <div className="flex overflow-hidden flex-shrink-0 justify-center items-center w-16 h-16 rounded-md bg-muted">
           {logoData ? (
             <img
               src={`data:${organisation.logo?.contentType};base64,${logoData.data}`}
               alt={`${organisation.name} logo`}
-              className="w-full h-full object-cover"
+              className="object-cover w-full h-full"
             />
           ) : (
-            <div className="text-2xl no-underline font-bold text-muted-foreground">
+            <div className="text-2xl font-bold no-underline text-muted-foreground">
               {organisation.name.charAt(0)}
             </div>
           )}
@@ -72,7 +101,7 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
           <h2 className="text-lg font-semibold hover:underline">{name}</h2>
           <div className="text-sm text-muted-foreground">{organisation.name}</div>
 
-          <div className="flex items-center gap-6 mt-2">
+          <div className="flex gap-6 items-center mt-2">
             {/* <div className="flex items-center text-sm text-muted-foreground">
             <CloudLightning size={16} className="mr-1" />
             <span>Bounty</span>
@@ -94,6 +123,18 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
               <span className="text-lg font-semibold">{prize.amount}</span>
               <span className="ml-2 text-sm text-muted-foreground">{prize.currency}</span>
             </div>
+          </div>
+        )}
+
+        {isLoggedIn && (
+          <div className="flex gap-2 ml-4">
+            <Button variant="outline" size="sm" onClick={handleEdit}>
+              Edit
+            </Button>
+            <Button variant="destructive" size="sm" onClick={handleDelete}>
+              Delete
+            </Button>
+            <p className="text-xs text-muted-foreground">only visible to you/admins</p>
           </div>
         )}
       </div>

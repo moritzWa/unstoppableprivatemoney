@@ -1,5 +1,6 @@
 import { useToast } from '@/hooks/use-toast';
 import { Share2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
 import { trpc } from '../utils/trpc';
 import { AppLayout } from './AppLayout';
@@ -76,7 +77,9 @@ const BountyPage = () => {
 
               <div>
                 <h2 className="text-xl font-semibold mb-2">Details</h2>
-                <p className="whitespace-pre-wrap">{bounty.details}</p>
+                <div className="prose dark:prose-invert max-w-none">
+                  <ReactMarkdown>{bounty.details}</ReactMarkdown>
+                </div>
               </div>
 
               <div>
