@@ -25,6 +25,8 @@ const BountyPage = () => {
     return <div className="container px-4 py-8 mx-auto">Bounty not found</div>;
   }
 
+  const isMultiplePrizes = bounty.prizes.split(',').length > 1;
+
   return (
     <AppLayout>
       <div className="container px-4 py-8 mx-auto">
@@ -100,7 +102,7 @@ const BountyPage = () => {
           <div className="space-y-6">
             {/* Prizes */}
             <div className="p-6 rounded-lg border bg-card">
-              <div className="flex gap-3 items-center mb-6">
+              <div className={`flex gap-3 items-center ${isMultiplePrizes ? 'mb-6' : ''}`}>
                 <div className="flex justify-center items-center w-8 h-8">
                   <img src="/zcash-zec.svg" alt="ZEC" className="dark:invert" />
                 </div>
@@ -117,27 +119,29 @@ const BountyPage = () => {
                   <div className="text-gray-500">Total Prizes</div>
                 </div>
               </div>
-              <div className="relative space-y-4">
-                <div className="absolute left-[7px] top-[15px] bottom-[15px] w-[2px] bg-border"></div>
-                {bounty.prizes.split(',').map((prize, index) => (
-                  <div key={index} className="flex items-center">
-                    <div className="relative z-10 mr-6 w-4 h-4 rounded-full bg-border"></div>
-                    <div className="flex flex-1 justify-between items-center">
-                      <span className="text-lg text-gray-500">
-                        {index === 0 ? '1st' : index === 1 ? '2nd' : index === 2 ? '3rd' : '4th'}
-                      </span>
-                      <div className="flex items-center">
-                        <span className="text-2xl font-bold">
-                          {parseInt(prize.trim()).toLocaleString()}
+              {isMultiplePrizes && (
+                <div className="relative space-y-4">
+                  <div className="absolute left-[7px] top-[15px] bottom-[15px] w-[2px] bg-border"></div>
+                  {bounty.prizes.split(',').map((prize, index) => (
+                    <div key={index} className="flex items-center">
+                      <div className="relative z-10 mr-6 w-4 h-4 rounded-full bg-border"></div>
+                      <div className="flex flex-1 justify-between items-center">
+                        <span className="text-lg text-gray-500">
+                          {index === 0 ? '1st' : index === 1 ? '2nd' : index === 2 ? '3rd' : '4th'}
                         </span>
-                        <span className="ml-2 text-lg text-gray-500">
-                          {bounty.prizeCurrency || 'ZEC'}
-                        </span>
+                        <div className="flex items-center">
+                          <span className="text-2xl font-bold">
+                            {parseInt(prize.trim()).toLocaleString()}
+                          </span>
+                          <span className="ml-2 text-lg text-gray-500">
+                            {bounty.prizeCurrency || 'ZEC'}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Actions */}

@@ -162,14 +162,7 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/bounty/:id"
-              element={
-                <div className="container px-4 py-8 mx-auto">
-                  <BountyPage />
-                </div>
-              }
-            />
+            <Route path="/bounty/:id" element={<BountyPage />} />
             {/* organisations list */}
             <Route
               path="/organisations"

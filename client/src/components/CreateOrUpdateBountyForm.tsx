@@ -27,7 +27,7 @@ const formSchema = z.object({
   contactLink: z.string().url('Must be a valid URL'),
   skills: z.string().min(1, 'Skills are required'),
   prizes: z.string().min(1, 'Prizes are required'),
-  prizeCurrency: z.string().min(1, 'Prize currency is required'),
+  prizeCurrency: z.string().min(1, 'Prize currency is required').default('ZEC'),
   details: z.string().min(1, 'Details are required'),
 });
 
@@ -89,7 +89,7 @@ export function CreateOrUpdateBountyForm() {
           contactLink: bountyData.contactLink,
           skills: bountyData.skills,
           prizes: bountyData.prizes,
-          prizeCurrency: bountyData.prizeCurrency,
+          prizeCurrency: bountyData.prizeCurrency || 'ZEC',
           details: bountyData.details,
         }
       : {
@@ -99,7 +99,7 @@ export function CreateOrUpdateBountyForm() {
           contactLink: '',
           skills: '',
           prizes: '',
-          prizeCurrency: '',
+          prizeCurrency: 'ZEC',
           details: '',
         },
   });
@@ -244,7 +244,7 @@ export function CreateOrUpdateBountyForm() {
               <FormItem>
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
-                  <Input placeholder="USD" {...field} />
+                  <Input placeholder="ZEC" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
