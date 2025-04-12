@@ -1,5 +1,6 @@
 import { Menu } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
@@ -8,7 +9,7 @@ export function Navbar() {
   const isAuthenticated = !!localStorage.getItem('accessToken');
 
   const NavLinks = () => (
-    <>
+    <div className="flex items-center gap-2 space-x-4">
       {/* bounties list */}
       <Link
         to="/"
@@ -28,6 +29,8 @@ export function Navbar() {
       {/* blog */}
       <Link to="/blog">Blog</Link>
 
+      <ThemeToggle />
+
       {/* {isAuthenticated ? (
         <Link
           to="/home"
@@ -43,7 +46,7 @@ export function Navbar() {
           Login
         </Link>
       )} */}
-    </>
+    </div>
   );
 
   return (
