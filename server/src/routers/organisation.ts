@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Bounty } from '../models/bounty';
 import { Organisation } from '../models/organisation';
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 
@@ -35,13 +36,50 @@ export const organisationRouter = router({
     return organisations.map((org) => ({
       id: org._id.toString(),
       name: org.name,
-      logo: {
-        contentType: org.logo.contentType,
-      },
+      logo: org.logo
+        ? {
+            contentType: org.logo.contentType,
+          }
+        : undefined,
       contactLink: org.contactLink,
       createdAt: org.createdAt.toISOString(),
       updatedAt: org.updatedAt.toISOString(),
     }));
+  }),
+
+  // Get organization by ID with its bounties
+  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+    const org = await Organisation.findById(input.id);
+    if (!org) {
+      throw new Error('Organization not found');
+    }
+
+    const bounties = await Bounty.find({ organisation: org._id }).sort({ createdAt: -1 });
+
+    return {
+      id: org._id.toString(),
+      name: org.name,
+      logo: org.logo
+        ? {
+            contentType: org.logo.contentType,
+          }
+        : undefined,
+      contactLink: org.contactLink,
+      createdAt: org.createdAt.toISOString(),
+      updatedAt: org.updatedAt.toISOString(),
+      bounties: bounties.map((bounty) => ({
+        id: bounty._id.toString(),
+        name: bounty.name,
+        submitLink: bounty.submitLink,
+        contactLink: bounty.contactLink,
+        skills: bounty.skills,
+        prizes: bounty.prizes,
+        prizeCurrency: bounty.prizeCurrency,
+        details: bounty.details,
+        createdAt: bounty.createdAt.toISOString(),
+        updatedAt: bounty.updatedAt.toISOString(),
+      })),
+    };
   }),
 
   // Add a new procedure to get organization logo
@@ -52,8 +90,8 @@ export const organisationRouter = router({
     }
 
     return {
-      contentType: org.logo.contentType,
       data: org.logo.data.toString('base64'),
+      contentType: org.logo.contentType,
     };
   }),
 });

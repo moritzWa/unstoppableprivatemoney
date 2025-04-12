@@ -32,19 +32,18 @@ interface BountyListItemProps {
   name: string;
   organisation: BountyData['organisation']; // Use the exact type from the server
   dueIn?: string;
-  prize: {
-    amount: string;
-    currency: string;
-  };
+  prizes: string;
+  prizeCurrency: string;
   isLoggedIn?: boolean;
 }
 
 const BountyListItem: React.FC<BountyListItemProps> = ({
   id,
   name,
+  prizes,
+  prizeCurrency,
   organisation,
   dueIn,
-  prize,
   isLoggedIn,
 }) => {
   const navigate = useNavigate();
@@ -78,6 +77,8 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
     { id: organisation.id },
     { enabled: !!organisation.logo } // Only fetch if org has a logo
   );
+
+  const totalPrice = prizes.split(',').reduce((acc, curr) => acc + parseFloat(curr.trim()), 0);
 
   return (
     <Link to={`/bounty/${id}`} className="no-underline">
@@ -118,27 +119,26 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
         </div>
 
         {/* Prize */}
-        {prize && (
+        {prizes && (
           <div className="flex flex-col items-end">
             <div className="flex items-center">
-              <span className="text-lg font-semibold">{prize.amount}</span>
-              <span className="ml-2 text-sm text-muted-foreground">{prize.currency}</span>
+              <span className="text-lg font-semibold">{totalPrice}</span>
+              <span className="ml-2 text-sm text-muted-foreground">{prizeCurrency}</span>
             </div>
           </div>
         )}
-
-        {isLoggedIn && (
-          <div className="flex gap-2 ml-4">
-            <Button variant="outline" size="sm" onClick={handleEdit}>
-              Edit
-            </Button>
-            <Button variant="destructive" size="sm" onClick={handleDelete}>
-              Delete
-            </Button>
-            <p className="text-xs text-muted-foreground">only visible to you/admins</p>
-          </div>
-        )}
       </div>
+      {isLoggedIn && (
+        <div className="flex gap-2 ml-4">
+          <Button variant="outline" size="sm" onClick={handleEdit}>
+            Edit
+          </Button>
+          <Button variant="destructive" size="sm" onClick={handleDelete}>
+            Delete
+          </Button>
+          <p className="text-xs text-muted-foreground">only visible to you/admins</p>
+        </div>
+      )}
     </Link>
   );
 };

@@ -13,6 +13,8 @@ import HomePage from './components/HomePage';
 import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
 import { Navbar } from './components/navbar';
+import OrganisationPage from './components/OrganisationPage';
+import OrganisationsListPage from './components/OrganisationsListPage';
 import SettingsPage from './components/SettingsPage';
 import { ThemeProvider } from './components/theme-provider';
 import WaitlistFormPage from './components/WaitlistFormPage';
@@ -75,7 +77,7 @@ function AppContent() {
         <meta name="twitter:image" content="https://unstoppableprivatemoney.com/linkpreview.png" />
         <link rel="canonical" href="https://unstoppableprivatemoney.com" />
       </Helmet>
-      <div className="min-h-screen bg-background text-foreground w-full">
+      <div className="w-full min-h-screen bg-background text-foreground">
         <Navbar />
         <div className="pt-24">
           <Routes>
@@ -99,7 +101,7 @@ function AppContent() {
             <Route
               path="/login"
               element={
-                <div className="container mx-auto px-4 py-8">
+                <div className="container px-4 py-8 mx-auto">
                   <LoginPage />
                 </div>
               }
@@ -107,7 +109,7 @@ function AppContent() {
             <Route
               path="/waitlist-form"
               element={
-                <div className="container mx-auto px-4 py-8">
+                <div className="container px-4 py-8 mx-auto">
                   <WaitlistFormPage />
                 </div>
               }
@@ -115,7 +117,7 @@ function AppContent() {
             <Route
               path="/blog"
               element={
-                <div className="container mx-auto px-4 py-8">
+                <div className="container px-4 py-8 mx-auto">
                   <BlogPage />
                 </div>
               }
@@ -123,7 +125,7 @@ function AppContent() {
             <Route
               path="/blog/:slug"
               element={
-                <div className="container mx-auto px-4 py-8">
+                <div className="container px-4 py-8 mx-auto">
                   <BlogPostPage />
                 </div>
               }
@@ -132,19 +134,29 @@ function AppContent() {
               path="/create-organisation"
               element={
                 <ProtectedRoute>
-                  <div className="container mx-auto px-4 py-8">
-                    <h1 className="text-2xl font-bold mb-8">Create Organisation</h1>
+                  <div className="container px-4 py-8 mx-auto">
+                    <h1 className="mb-8 text-2xl font-bold">Create Organisation</h1>
                     <CreateOrganisationForm />
                   </div>
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/organisation/:id"
+              element={
+                <div className="container px-4 py-8 mx-auto">
+                  <OrganisationPage />
+                </div>
+              }
+            />
+
             <Route
               path="/create-bounty"
               element={
                 <ProtectedRoute>
-                  <div className="container mx-auto px-4 py-8">
-                    <h1 className="text-2xl font-bold mb-8">Create Bounty</h1>
+                  <div className="container px-4 py-8 mx-auto">
+                    <h1 className="mb-8 text-2xl font-bold">Create Bounty</h1>
                     <CreateOrUpdateBountyForm />
                   </div>
                 </ProtectedRoute>
@@ -153,15 +165,25 @@ function AppContent() {
             <Route
               path="/bounty/:id"
               element={
-                <div className="container mx-auto px-4 py-8">
+                <div className="container px-4 py-8 mx-auto">
                   <BountyPage />
                 </div>
               }
             />
+            {/* organisations list */}
+            <Route
+              path="/organisations"
+              element={
+                <div className="container px-4 py-8 mx-auto">
+                  <OrganisationsListPage />
+                </div>
+              }
+            />
+
             <Route
               path="/edit-bounty/:id"
               element={
-                <div className="container mx-auto px-4 py-8">
+                <div className="container px-4 py-8 mx-auto">
                   <CreateOrUpdateBountyForm />
                 </div>
               }

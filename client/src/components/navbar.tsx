@@ -17,6 +17,14 @@ export function Navbar() {
         Bounties
       </Link>
 
+      {/* organisations */}
+      <Link
+        to="/organisations"
+        className={`hover:text-primary transition-colors ${location.pathname === '/organisations' ? 'text-primary font-medium' : ''}`}
+      >
+        Organisations
+      </Link>
+
       {/* blog */}
       <Link to="/blog">Blog</Link>
 

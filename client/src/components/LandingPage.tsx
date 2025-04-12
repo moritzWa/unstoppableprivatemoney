@@ -50,10 +50,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
                 name={bounty.name}
                 organisation={bounty.organisation}
                 dueIn={undefined}
-                prize={{
-                  amount: bounty.prizes.split(',')[0].trim(),
-                  currency: bounty.prizeCurrency,
-                }}
+                prizes={bounty.prizes}
+                prizeCurrency={bounty.prizeCurrency}
                 isLoggedIn={!!token}
               />
             ))}

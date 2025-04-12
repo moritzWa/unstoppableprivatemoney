@@ -48,7 +48,12 @@ const BountyPage = () => {
               </div>
               <div className="flex-1">
                 <h1 className="text-3xl font-bold">{bounty.name}</h1>
-                <p className="text-muted-foreground">{bounty.organisation.name}</p>
+                <a
+                  href={`/organisation/${bounty.organisation.id}`}
+                  className="text-muted-foreground text-lg pt-4 hover:underline"
+                >
+                  {bounty.organisation.name}
+                </a>
               </div>
               <Button
                 variant="outline"
@@ -69,20 +74,6 @@ const BountyPage = () => {
             {/* Details */}
             <div className="space-y-6">
               <div>
-                <h2 className="mb-2 text-xl font-semibold">About {bounty.organisation.name}</h2>
-                <p className="text-muted-foreground">
-                  A decentralized organization focused on advancing blockchain technology.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-xl font-semibold">Details</h2>
-                <div className="max-w-none prose dark:prose-invert">
-                  <ReactMarkdown>{bounty.details}</ReactMarkdown>
-                </div>
-              </div>
-
-              <div>
                 <h2 className="mb-2 text-xl font-semibold">Required Skills</h2>
                 <div className="flex flex-wrap gap-2">
                   {bounty.skills.split(',').map((skill) => (
@@ -93,6 +84,13 @@ const BountyPage = () => {
                       {skill.trim()}
                     </div>
                   ))}
+                </div>
+              </div>
+
+              <div>
+                <h2 className="mb-2 text-xl font-semibold">Details</h2>
+                <div className="max-w-none prose dark:prose-invert">
+                  <ReactMarkdown>{bounty.details}</ReactMarkdown>
                 </div>
               </div>
             </div>
