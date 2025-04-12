@@ -18,27 +18,27 @@ const BountyPage = () => {
   const { toast } = useToast();
 
   if (isLoading) {
-    return <div className="container mx-auto px-4 py-8">Loading...</div>;
+    return <div className="container px-4 py-8 mx-auto">Loading...</div>;
   }
 
   if (!bounty) {
-    return <div className="container mx-auto px-4 py-8">Bounty not found</div>;
+    return <div className="container px-4 py-8 mx-auto">Bounty not found</div>;
   }
 
   return (
     <AppLayout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="container px-4 py-8 mx-auto">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Main Content */}
-          <div className="md:col-span-2 space-y-6">
+          <div className="space-y-6 md:col-span-2">
             {/* Header */}
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-md bg-muted flex-shrink-0 flex items-center justify-center overflow-hidden">
+            <div className="flex gap-4 items-start">
+              <div className="flex overflow-hidden flex-shrink-0 justify-center items-center w-16 h-16 rounded-md bg-muted">
                 {logoData ? (
                   <img
                     src={`data:${bounty.organisation.logo?.contentType};base64,${logoData.data}`}
                     alt={`${bounty.organisation.name} logo`}
-                    className="w-full h-full object-cover"
+                    className="object-cover w-full h-full"
                   />
                 ) : (
                   <div className="text-2xl font-bold text-muted-foreground">
@@ -60,7 +60,7 @@ const BountyPage = () => {
                   });
                 }}
               >
-                <Share2 className="h-4 w-4" />
+                <Share2 className="w-4 h-4" />
               </Button>
             </div>
 
@@ -69,26 +69,26 @@ const BountyPage = () => {
             {/* Details */}
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold mb-2">About {bounty.organisation.name}</h2>
+                <h2 className="mb-2 text-xl font-semibold">About {bounty.organisation.name}</h2>
                 <p className="text-muted-foreground">
                   A decentralized organization focused on advancing blockchain technology.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-2">Details</h2>
-                <div className="prose dark:prose-invert max-w-none">
+                <h2 className="mb-2 text-xl font-semibold">Details</h2>
+                <div className="max-w-none prose dark:prose-invert">
                   <ReactMarkdown>{bounty.details}</ReactMarkdown>
                 </div>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-2">Required Skills</h2>
+                <h2 className="mb-2 text-xl font-semibold">Required Skills</h2>
                 <div className="flex flex-wrap gap-2">
                   {bounty.skills.split(',').map((skill) => (
                     <div
                       key={skill}
-                      className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm"
+                      className="px-3 py-1 text-sm rounded-full bg-secondary text-secondary-foreground"
                     >
                       {skill.trim()}
                     </div>
@@ -101,24 +101,49 @@ const BountyPage = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Prizes */}
-            <div className="rounded-lg border bg-card p-6">
-              <h2 className="text-xl font-semibold mb-4">Prizes</h2>
-              <div className="space-y-3">
+            <div className="p-6 rounded-lg border bg-card">
+              <div className="flex gap-3 items-center mb-6">
+                <div className="flex justify-center items-center w-8 h-8">
+                  <img src="/zcash-zec.svg" alt="ZEC" />
+                </div>
+                <div>
+                  <span className="text-2xl font-bold">
+                    {bounty.prizes
+                      .split(',')
+                      .reduce((sum, prize) => sum + parseInt(prize.trim().replace(/,/g, '')), 0)
+                      .toLocaleString()}
+                  </span>
+                  <span className="ml-2 text-xl text-gray-500">
+                    {bounty.prizeCurrency || 'ZEC'}
+                  </span>
+                  <div className="text-gray-500">Total Prizes</div>
+                </div>
+              </div>
+              <div className="relative space-y-4">
+                <div className="absolute left-[7px] top-[15px] bottom-[15px] w-[2px] bg-border"></div>
                 {bounty.prizes.split(',').map((prize, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      {index === 0 ? '1st' : index === 1 ? '2nd' : '3rd'} place
-                    </span>
-                    <span className="font-semibold">
-                      {prize.trim()} {bounty.prizeCurrency}
-                    </span>
+                  <div key={index} className="flex items-center">
+                    <div className="relative z-10 mr-6 w-4 h-4 rounded-full bg-border"></div>
+                    <div className="flex flex-1 justify-between items-center">
+                      <span className="text-lg text-gray-500">
+                        {index === 0 ? '1st' : index === 1 ? '2nd' : index === 2 ? '3rd' : '4th'}
+                      </span>
+                      <div className="flex items-center">
+                        <span className="text-2xl font-bold">
+                          {parseInt(prize.trim()).toLocaleString()}
+                        </span>
+                        <span className="ml-2 text-lg text-gray-500">
+                          {bounty.prizeCurrency || 'ZEC'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Actions */}
-            <div className="rounded-lg border bg-card p-6 space-y-4">
+            <div className="p-6 space-y-4 rounded-lg border bg-card">
               <Button
                 className="w-full"
                 size="lg"

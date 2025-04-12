@@ -61,6 +61,7 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     if (window.confirm('Are you sure you want to delete this bounty?')) {
       deleteBounty.mutate({ id });
     }
