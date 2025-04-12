@@ -89,15 +89,6 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   />
                 </div>
               </div>
-              <div className="text-sm text-center">
-                Don&apos;t have an account?{' '}
-                <button
-                  onClick={() => (window.location.href = '/signup')}
-                  className="underline underline-offset-4 hover:text-primary"
-                >
-                  Sign up
-                </button>
-              </div>
             </div>
           </form>
         </CardContent>
