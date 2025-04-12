@@ -51,7 +51,7 @@ export function CreateOrUpdateBountyForm() {
         title: 'Success',
         description: 'Bounty updated successfully',
       });
-      navigate('/home');
+      navigate('/');
     },
     onError: (error) => {
       toast({
@@ -68,7 +68,7 @@ export function CreateOrUpdateBountyForm() {
         title: 'Success',
         description: 'Bounty created successfully',
       });
-      navigate('/home');
+      navigate('/');
     },
     onError: (error) => {
       toast({

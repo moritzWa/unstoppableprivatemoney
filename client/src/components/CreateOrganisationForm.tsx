@@ -35,7 +35,7 @@ export function CreateOrganisationForm() {
         title: 'Success',
         description: 'Organisation created successfully',
       });
-      navigate('/home');
+      navigate('/');
     },
     onError: (error) => {
       toast({

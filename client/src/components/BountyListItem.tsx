@@ -129,7 +129,7 @@ const BountyListItem: React.FC<BountyListItemProps> = ({
         )}
       </div>
       {isLoggedIn && (
-        <div className="flex gap-2 ml-4">
+        <div className="flex gap-2 py-2 ml-4">
           <Button variant="outline" size="sm" onClick={handleEdit}>
             Edit
           </Button>

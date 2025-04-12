@@ -26,6 +26,14 @@ export function Navbar() {
         Organisations
       </Link>
 
+      {/* add create-bounty and create-organisation links if isAuthenticated */}
+      {isAuthenticated && (
+        <>
+          <Link to="/create-bounty">Create Bounty</Link>
+          <Link to="/create-organisation">Create Organisation</Link>
+        </>
+      )}
+
       {/* blog */}
       <Link to="/blog">Blog</Link>
 

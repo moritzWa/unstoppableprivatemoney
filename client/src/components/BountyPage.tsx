@@ -102,7 +102,7 @@ const BountyPage = () => {
             <div className="p-6 rounded-lg border bg-card">
               <div className="flex gap-3 items-center mb-6">
                 <div className="flex justify-center items-center w-8 h-8">
-                  <img src="/zcash-zec.svg" alt="ZEC" />
+                  <img src="/zcash-zec.svg" alt="ZEC" className="dark:invert" />
                 </div>
                 <div>
                   <span className="text-2xl font-bold">
