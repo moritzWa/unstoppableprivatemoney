@@ -84,4 +84,35 @@ export const bountyRouter = router({
       updatedAt: bounty.updatedAt.toISOString(),
     };
   }),
+
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) => {
+    const bounty = await Bounty.findByIdAndDelete(input.id);
+    if (!bounty) {
+      throw new Error('Bounty not found');
+    }
+    return bounty;
+  }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().min(1, 'Name is required'),
+        organisation: z.string(),
+        submitLink: z.string().url('Must be a valid URL'),
+        contactLink: z.string().url('Must be a valid URL'),
+        skills: z.string().min(1, 'Skills are required'),
+        prizes: z.string().min(1, 'Prizes are required'),
+        prizeCurrency: z.string().min(1, 'Prize currency is required'),
+        details: z.string().min(1, 'Details are required'),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { id, ...updateData } = input;
+      const bounty = await Bounty.findByIdAndUpdate(id, updateData, { new: true });
+      if (!bounty) {
+        throw new Error('Bounty not found');
+      }
+      return bounty;
+    }),
 });
