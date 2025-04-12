@@ -4,8 +4,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
-import BlogPage from './app/blog/BlogPage';
-import BlogPostPage from './app/blog/BlogPostPage';
 import BountyPage from './components/BountyPage';
 import { CreateOrganisationForm } from './components/CreateOrganisationForm';
 import { CreateOrUpdateBountyForm } from './components/CreateOrUpdateBountyForm';
@@ -114,7 +112,7 @@ function AppContent() {
                 </div>
               }
             />
-            <Route
+            {/* <Route
               path="/blog"
               element={
                 <div className="container px-4 py-8 mx-auto">
@@ -129,7 +127,7 @@ function AppContent() {
                   <BlogPostPage />
                 </div>
               }
-            />
+            /> */}
             <Route
               path="/create-organisation"
               element={
