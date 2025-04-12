@@ -30,7 +30,7 @@ export const organisationRouter = router({
     }),
 
   // Add a get method to fetch organizations
-  getAll: protectedProcedure.query(async () => {
+  getAll: publicProcedure.query(async () => {
     const organisations = await Organisation.find().sort({ createdAt: -1 });
 
     return organisations.map((org) => ({
