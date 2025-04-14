@@ -48,6 +48,14 @@ export const authRouter = router({
         const payload = ticket.getPayload();
         if (!payload) throw new Error('No payload');
 
+        // Check if email is allowed
+        const allowedEmails = ['wallawitsch@gmail.com', 'arjun.khemani@gmail.com'];
+        if (!allowedEmails.includes(payload.email || '')) {
+          throw new Error(
+            'We do not accept new admin users currently. Please email arjun.khemani@gmail.com if you want to use this application.'
+          );
+        }
+
         // Find or create user
         let user = await UserModel.findOne({ googleId: payload.sub });
 

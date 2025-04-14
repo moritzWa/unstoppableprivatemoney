@@ -2,15 +2,17 @@ import { defaultPage, LINK_TO_WAITLIST } from '@/App';
 import { useLocation } from 'react-router-dom';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { trpc } from '@/utils/trpc';
 import { cn } from '@/lib/utils';
+import { trpc } from '@/utils/trpc';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const reason = searchParams.get('reason');
+  const [error, setError] = useState<string | null>(null);
+
   const getLoginTitle = () => {
     switch (reason) {
       case 'enrichment-login-wall':
@@ -68,6 +70,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       }
     } catch (error) {
       console.error('Login failed:', error);
+      setError(error instanceof Error ? error.message : 'Login failed. Please try again.');
     }
   }, []);
 
@@ -77,6 +80,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         <CardHeader className="text-center">
           <CardTitle className="text-xl sm:text-2xl">{getLoginTitle()}</CardTitle>
           <CardDescription>{getLoginDescription()}</CardDescription>
+          {error && <div className="mt-4 text-sm text-red-500 whitespace-pre-wrap">{error}</div>}
         </CardHeader>
         <CardContent className="px-4 sm:px-6">
           <form>
