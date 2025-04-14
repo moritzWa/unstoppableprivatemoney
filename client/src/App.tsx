@@ -179,6 +179,17 @@ function AppContent() {
                 </div>
               }
             />
+
+            <Route
+              path="/edit-organisation/:id"
+              element={
+                <ProtectedRoute>
+                  <div className="container px-4 py-8 mx-auto">
+                    <CreateOrganisationForm />
+                  </div>
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </div>
       </div>

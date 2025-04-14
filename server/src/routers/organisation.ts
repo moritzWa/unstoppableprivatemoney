@@ -9,20 +9,24 @@ export const organisationRouter = router({
       z.object({
         name: z.string().min(1, 'Name is required'),
         contactLink: z.string().url('Must be a valid URL'),
-        logo: z.object({
-          data: z.string(), // base64 string
-          contentType: z.string(),
-        }),
+        logo: z
+          .object({
+            data: z.string(),
+            contentType: z.string(),
+          })
+          .optional(),
       })
     )
     .mutation(async ({ input }) => {
       const organisation = new Organisation({
         name: input.name,
         contactLink: input.contactLink,
-        logo: {
-          data: Buffer.from(input.logo.data, 'base64'),
-          contentType: input.logo.contentType,
-        },
+        ...(input.logo && {
+          logo: {
+            data: Buffer.from(input.logo.data, 'base64'),
+            contentType: input.logo.contentType,
+          },
+        }),
       });
 
       await organisation.save();
@@ -93,5 +97,52 @@ export const organisationRouter = router({
       data: org.logo.data.toString('base64'),
       contentType: org.logo.contentType,
     };
+  }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().min(1, 'Name is required'),
+        contactLink: z.string().url('Must be a valid URL'),
+        logo: z
+          .object({
+            data: z.string(), // base64 string
+            contentType: z.string(),
+          })
+          .optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const organisation = await Organisation.findById(input.id);
+      if (!organisation) {
+        throw new Error('Organisation not found');
+      }
+
+      organisation.name = input.name;
+      organisation.contactLink = input.contactLink;
+
+      if (input.logo) {
+        organisation.logo = {
+          data: Buffer.from(input.logo.data, 'base64'),
+          contentType: input.logo.contentType,
+        };
+      }
+
+      await organisation.save();
+      return organisation;
+    }),
+
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) => {
+    const organisation = await Organisation.findById(input.id);
+    if (!organisation) {
+      throw new Error('Organisation not found');
+    }
+
+    // You might want to also delete or handle associated bounties
+    await Bounty.deleteMany({ organisation: input.id });
+
+    await organisation.deleteOne();
+    return { success: true };
   }),
 });

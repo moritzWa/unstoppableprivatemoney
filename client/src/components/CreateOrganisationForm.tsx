@@ -1,7 +1,8 @@
 import { toast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as z from 'zod';
 import { trpc } from '../utils/trpc';
 import { Button } from './ui/button';
@@ -28,21 +29,36 @@ const formSchema = z.object({
 });
 
 export function CreateOrganisationForm() {
+  const { id } = useParams(); // Get org ID from URL if editing
+  const isEditing = !!id;
   const navigate = useNavigate();
+
+  // Query for existing org data if editing
+  const { data: existingOrg } = trpc.organisation.getById.useQuery(
+    { id: id! },
+    { enabled: isEditing }
+  );
+
+  const utils = trpc.useContext();
+
   const createOrganisation = trpc.organisation.create.useMutation({
     onSuccess: () => {
       toast({
         title: 'Success',
         description: 'Organisation created successfully',
       });
-      navigate('/');
+      navigate('/organisations');
     },
-    onError: (error) => {
+  });
+
+  const updateOrganisation = trpc.organisation.update.useMutation({
+    onSuccess: () => {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to create organisation',
-        variant: 'destructive',
+        title: 'Success',
+        description: 'Organisation updated successfully',
       });
+      utils.organisation.getAll.invalidate();
+      navigate('/organisations');
     },
   });
 
@@ -54,48 +70,70 @@ export function CreateOrganisationForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!values.logo) {
-      toast({
-        title: 'Error',
-        description: 'Please select a logo image',
-        variant: 'destructive',
+  // Set form values when editing and data is loaded
+  React.useEffect(() => {
+    if (isEditing && existingOrg) {
+      form.reset({
+        name: existingOrg.name,
+        contactLink: existingOrg.contactLink,
       });
-      return;
     }
+  }, [existingOrg, isEditing, form]);
 
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // Convert file to base64 string
-      const fileReader = new FileReader();
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        fileReader.onload = () => {
-          if (typeof fileReader.result === 'string') {
-            // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
-            const base64 = fileReader.result.split(',')[1];
-            resolve(base64);
-          } else {
-            reject(new Error('Failed to read file as base64'));
-          }
-        };
-        fileReader.onerror = () => reject(fileReader.error);
-      });
+      let logoData;
+      if (values.logo) {
+        // Convert file to base64 string
+        const fileReader = new FileReader();
+        const base64Promise = new Promise<string>((resolve, reject) => {
+          fileReader.onload = () => {
+            if (typeof fileReader.result === 'string') {
+              // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
+              const base64 = fileReader.result.split(',')[1];
+              resolve(base64);
+            } else {
+              reject(new Error('Failed to read file as base64'));
+            }
+          };
+          fileReader.onerror = () => reject(fileReader.error);
+        });
 
-      fileReader.readAsDataURL(values.logo);
-      const base64Data = await base64Promise;
+        fileReader.readAsDataURL(values.logo);
+        logoData = await base64Promise;
+      }
 
-      await createOrganisation.mutate({
+      const payload = {
         name: values.name,
         contactLink: values.contactLink,
-        logo: {
-          data: base64Data,
-          contentType: values.logo.type,
-        },
-      });
+        ...(logoData && values.logo
+          ? {
+              logo: {
+                data: logoData,
+                contentType: values.logo.type || 'image/jpeg', // Ensure contentType is never undefined
+              },
+            }
+          : isEditing
+            ? {}
+            : {
+                logo: {
+                  // For creation, provide default logo if none selected
+                  data: '',
+                  contentType: 'image/jpeg',
+                },
+              }),
+      };
+
+      if (isEditing) {
+        await updateOrganisation.mutate({ id, ...payload });
+      } else {
+        await createOrganisation.mutate(payload);
+      }
     } catch (error) {
-      console.error('Error creating organisation:', error);
+      console.error('Error:', error);
       toast({
         title: 'Error',
-        description: 'Failed to process image. Please try again with a smaller file.',
+        description: 'Failed to process request. Please try again.',
         variant: 'destructive',
       });
     }
@@ -104,6 +142,9 @@ export function CreateOrganisationForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <h1 className="text-2xl font-bold mb-6">
+          {isEditing ? 'Edit Organisation' : 'Create Organisation'}
+        </h1>
         <FormField
           control={form.control}
           name="name"
@@ -169,8 +210,11 @@ export function CreateOrganisationForm() {
           )}
         />
 
-        <Button type="submit" disabled={createOrganisation.isLoading}>
-          {createOrganisation.isLoading ? 'Creating...' : 'Create Organisation'}
+        <Button
+          type="submit"
+          disabled={createOrganisation.isLoading || updateOrganisation.isLoading}
+        >
+          {isEditing ? 'Update' : 'Create'} Organisation
         </Button>
       </form>
     </Form>
