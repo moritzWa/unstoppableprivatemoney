@@ -1,6 +1,7 @@
 import React from 'react';
 import { trpc } from '../utils/trpc';
 import BountyListItem from './BountyListItem';
+import { Skeleton } from './ui/skeleton';
 
 interface LandingPageProps {
   landingPageKeyword?: string;
@@ -36,7 +37,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ landingPageKeyword }) => {
         <h2 className="text-2xl font-bold mb-6">All Open</h2>
 
         {isLoading ? (
-          <div className="text-center py-8">Loading bounties...</div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex gap-4 items-start p-4 rounded-lg bg-card">
+                <Skeleton className="w-16 h-16 rounded-md" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-6 w-2/3" />
+                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-4 w-1/4 mt-2" />
+                </div>
+                <Skeleton className="h-8 w-24" />
+              </div>
+            ))}
+          </div>
         ) : !bounties || bounties.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             No bounties available at the moment. Be the first to create one!

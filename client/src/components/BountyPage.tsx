@@ -6,6 +6,7 @@ import { trpc } from '../utils/trpc';
 import { AppLayout } from './AppLayout';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
+import { Skeleton } from './ui/skeleton';
 
 const BountyPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +19,55 @@ const BountyPage = () => {
   const { toast } = useToast();
 
   if (isLoading) {
-    return <div className="container px-4 py-8 mx-auto">Loading...</div>;
+    return (
+      <AppLayout>
+        <div className="container px-4 py-8 mx-auto">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {/* Main Content */}
+            <div className="space-y-6 md:col-span-2">
+              <div className="flex gap-4 items-start">
+                <Skeleton className="w-16 h-16 rounded-md" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-8 w-2/3" />
+                  <Skeleton className="h-6 w-1/3" />
+                </div>
+              </div>
+              <Skeleton className="h-px w-full" />
+              <div className="space-y-6">
+                <div>
+                  <Skeleton className="h-6 w-40 mb-4" />
+                  <div className="flex gap-2">
+                    {[1, 2, 3].map((i) => (
+                      <Skeleton key={i} className="h-8 w-20 rounded-full" />
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-40" />
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} className="h-4 w-full" />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Prizes */}
+              <div className="p-6 rounded-lg border bg-card">
+                <Skeleton className="h-20 w-full" />
+              </div>
+
+              {/* Actions */}
+              <div className="p-6 rounded-lg border bg-card space-y-4">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </AppLayout>
+    );
   }
 
   if (!bounty) {
