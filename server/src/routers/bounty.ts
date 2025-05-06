@@ -23,34 +23,41 @@ export const bountyRouter = router({
     }),
 
   getAll: publicProcedure.query(async () => {
-    const bounties = await Bounty.find()
-      .sort({ createdAt: -1 })
-      .populate<{ organisation: PopulatedOrganisation }>('organisation');
+    try {
+      console.log('About to query bounties');
+      const bounties = await Bounty.find()
+        .sort({ createdAt: -1 })
+        .populate<{ organisation: PopulatedOrganisation }>('organisation');
+      console.log('Bounties found:', bounties.length);
 
-    return bounties.map((bounty) => {
-      const org = bounty.organisation as PopulatedOrganisation;
-      return {
-        id: bounty._id.toString(),
-        name: bounty.name,
-        organisation: {
-          id: org._id.toString(),
-          name: org.name,
-          logo: org.logo
-            ? {
-                contentType: org.logo.contentType,
-              }
-            : undefined,
-        },
-        submitLink: bounty.submitLink,
-        contactLink: bounty.contactLink,
-        skills: bounty.skills,
-        prizes: bounty.prizes,
-        prizeCurrency: bounty.prizeCurrency,
-        details: bounty.details,
-        createdAt: bounty.createdAt.toISOString(),
-        updatedAt: bounty.updatedAt.toISOString(),
-      };
-    });
+      return bounties.map((bounty) => {
+        const org = bounty.organisation as PopulatedOrganisation;
+        return {
+          id: bounty._id.toString(),
+          name: bounty.name,
+          organisation: {
+            id: org._id.toString(),
+            name: org.name,
+            logo: org.logo
+              ? {
+                  contentType: org.logo.contentType,
+                }
+              : undefined,
+          },
+          submitLink: bounty.submitLink,
+          contactLink: bounty.contactLink,
+          skills: bounty.skills,
+          prizes: bounty.prizes,
+          prizeCurrency: bounty.prizeCurrency,
+          details: bounty.details,
+          createdAt: bounty.createdAt.toISOString(),
+          updatedAt: bounty.updatedAt.toISOString(),
+        };
+      });
+    } catch (err) {
+      console.error('Error in getAll:', err);
+      throw err;
+    }
   }),
 
   getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
